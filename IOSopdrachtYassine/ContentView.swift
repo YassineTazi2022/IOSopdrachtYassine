@@ -1,24 +1,213 @@
-//
-//  ContentView.swift
-//  IOSopdrachtYassine
-//
-//  Created by ehb on 29/04/2024.
-//
-
 import SwiftUI
 
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, orld!")
-        }
-        .padding()
+struct Recipe: Decodable {
+    let id: UUID = UUID()
+    let title: String
+    let ingredients: String
+    let servings: String
+    let instructions: String
+    let imageName: String // Nieuw toegevoegd voor de afbeeldingsnaam
+    
+    // Computed property om de naam van de titel te halen
+    var name: String {
+        return title
+    }
+    
+    // Computed property om een dummy creator te geven, aangezien deze niet beschikbaar is in de JSON
+    var creator: String {
+        return "Unknown"
     }
 }
 
-#Preview {
-    ContentView()
+struct RecipeCard: View {
+    let recipe: Recipe
+    var body: some View {
+        VStack(alignment: .leading) {
+            Image(recipe.imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .clipped()
+            Text(recipe.name)
+                .font(.headline)
+            Text("By \(recipe.creator)")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+        .cornerRadius(10)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.gray, lineWidth: 1)
+        )
+    }
+}
+
+struct ContentView: View {
+    
+    @State private var recipes: [Recipe] = []
+    @State private var isMenuVisible = false
+    
+    let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
+    let fontSize = 50
+    
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            Color.accentColor
+                .ignoresSafeArea()
+            VStack(alignment: .center) {
+                HStack {
+                    Button(action: {
+                        isMenuVisible.toggle()
+                    }) {
+                        Image(systemName: "line.horizontal.3")
+                            .foregroundColor(.white)
+                            .font(.system(size: 24))
+                    }
+                    Spacer()
+                    HStack {
+                        Button(action: {
+                            // Handle camera icon action
+                        }) {
+                            Image(systemName: "camera")
+                                .foregroundColor(.white)
+                                .font(.system(size: 24))
+                        }
+                        Button(action: {
+                            // Handle person icon action
+                        }) {
+                            Image(systemName: "person")
+                                .foregroundColor(.white)
+                                .font(.system(size: 24))
+                        }
+                    }
+                }
+                .padding(.horizontal)
+                
+                Text("Hey bertie")
+                    .fontWeight(.heavy)
+                    .foregroundColor(Color("LightPrimary"))
+                    .font(.custom("Rubik", size: 50))
+                    .frame(width: 300 , height:55, alignment: .topLeading)
+                
+                Text("Let's Cook")
+                    .fontWeight(.heavy)
+                    .foregroundColor(Color("LightPrimary"))
+                    .font(.custom("Rubik", size: 50))
+                    .frame(width: 300 , height:55, alignment: .topTrailing)
+                
+                HStack {
+                    Button(action: {
+                        // Handle recipe finding action
+                        fetchRecipes()
+                    }) {
+                        Text("Recept vinden")
+                            .foregroundColor(.black)
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(10)
+                    }
+                    .padding(.top)
+                }
+                
+                ScrollView {
+                    LazyVGrid(columns: gridItems, spacing: 20) {
+                        ForEach(recipes, id: \.id) { recipe in
+                            RecipeCard(recipe: recipe)
+                        }
+                    }
+                    .padding(.top)
+                }
+            }
+            
+            if isMenuVisible {
+                Color.black.opacity(0.5)
+                    .edgesIgnoringSafeArea(.all)
+                    .onTapGesture {
+                        isMenuVisible.toggle()
+                    }
+                
+                VStack(alignment: .leading) {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            isMenuVisible.toggle()
+                        }) {
+                            Image(systemName: "xmark")
+                                .foregroundColor(.white)
+                                .font(.system(size: 24))
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Home")
+                            .foregroundColor(.white)
+                            .font(.title)
+                        
+                        Text("Mijn Recepten")
+                            .foregroundColor(.white)
+                            .font(.title)
+                        
+                        Text("Mijn Ingrediënten")
+                            .foregroundColor(.white)
+                            .font(.title)
+                        
+                        Text("Profiel")
+                            .foregroundColor(.white)
+                            .font(.title)
+                    }
+                    .padding(.top, 50)
+                    .padding(.horizontal)
+                    
+                    Spacer()
+                }
+                .background(Color(hex: "#28361"))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .offset(x: 0, y: 0)
+            }
+        }
+    }
+    
+    func fetchRecipes() {
+        let query = "italian wedding soup".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        let url = URL(string: "https://api.api-ninjas.com/v1/recipe?query=" + query)!
+        var request = URLRequest(url: url)
+        request.setValue("Tocp6yu2WBdASJRGBdZQYQ==YBCkRPY4EtBFt6SU", forHTTPHeaderField: "X-Api-Key")
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                print("No data received: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            
+            do {
+                let decodedData = try JSONDecoder().decode([Recipe].self, from: data)
+                DispatchQueue.main.async {
+                    self.recipes = decodedData
+                }
+            } catch {
+                print("Error decoding JSON: \(error.localizedDescription)")
+            }
+        }.resume()
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex)
+        var rgb: UInt64 = 0
+        
+        scanner.scanHexInt64(&rgb)
+        
+        let red = Double((rgb & 0xFF0000) >> 16) / 255.0
+        let green = Double((rgb & 0x00FF00) >> 8) / 255.0
+        let blue = Double(rgb & 0x0000FF) / 255.0
+        
+        self.init(red: red, green: green, blue: blue)
+    }
 }
