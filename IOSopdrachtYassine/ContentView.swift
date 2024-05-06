@@ -1,12 +1,11 @@
 import SwiftUI
 
-struct Recipe: Decodable {
+struct Recipe: Decodable, Identifiable {
     let id: UUID = UUID()
     let title: String
     let ingredients: String
     let servings: String
     let instructions: String
-    let imageName: String // Nieuw toegevoegd voor de afbeeldingsnaam
     
     // Computed property om de naam van de titel te halen
     var name: String {
@@ -17,27 +16,44 @@ struct Recipe: Decodable {
     var creator: String {
         return "Unknown"
     }
+    
+    // Computed property om een dummy imageName te geven, aangezien deze niet beschikbaar is in de JSON
+    var imageName: String {
+        return "placeholderImage" // Plaats hier de naam van een placeholder-afbeelding
+    }
 }
 
 struct RecipeCard: View {
     let recipe: Recipe
+    @State private var isPresented = false
+    
     var body: some View {
         VStack(alignment: .leading) {
             Image(recipe.imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
+                .frame(height: 150) // Hoogte van de afbeelding aanpassen
                 .clipped()
             Text(recipe.name)
                 .font(.headline)
+                .foregroundColor(.white) // Tekstkleur wit maken
             Text("By \(recipe.creator)")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(.white) // Tekstkleur wit maken
         }
+        .padding()
+        .background(Color.black) // Achtergrondkleur van de kaart zwart maken
         .cornerRadius(10)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
                 .stroke(Color.gray, lineWidth: 1)
         )
+        .onTapGesture {
+            isPresented.toggle()
+        }
+        .fullScreenCover(isPresented: $isPresented) {
+            RecipeDetail(recipe: recipe)
+        }
     }
 }
 
@@ -168,7 +184,7 @@ struct ContentView: View {
     }
     
     func fetchRecipes() {
-        let query = "italian wedding soup".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        let query = "spaghetti".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         let url = URL(string: "https://api.api-ninjas.com/v1/recipe?query=" + query)!
         var request = URLRequest(url: url)
         request.setValue("Tocp6yu2WBdASJRGBdZQYQ==YBCkRPY4EtBFt6SU", forHTTPHeaderField: "X-Api-Key")
@@ -190,6 +206,34 @@ struct ContentView: View {
         }.resume()
     }
 }
+
+struct RecipeDetail: View {
+    let recipe: Recipe
+    @Environment(\.presentationMode) var presentationMode
+    
+    var body: some View {
+        VStack {
+            Image("spaghetti-bolognese-recipe")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 200)
+                .cornerRadius(10)
+            Text(recipe.name)
+                .font(.title)
+            Text("Ingredients: \(recipe.ingredients)")
+            Text("Servings: \(recipe.servings)")
+            Text("Instructions: \(recipe.instructions)")
+            Spacer()
+            Button("Terug") {
+                presentationMode.wrappedValue.dismiss()
+            }
+        }
+        .padding()
+    }
+}
+
+
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

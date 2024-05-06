@@ -13,6 +13,7 @@
 		E06F413D2BDFB4A9003E7FF2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E06F413C2BDFB4A9003E7FF2 /* Preview Assets.xcassets */; };
 		E06F41482BDFD36F003E7FF2 /* Rubik.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E06F41472BDFD36F003E7FF2 /* Rubik.ttf */; };
 		E06F414A2BDFD437003E7FF2 /* RubikMonoOne.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E06F41492BDFD437003E7FF2 /* RubikMonoOne.ttf */; settings = {ASSET_TAGS = (RubikMonoOne, ); }; };
+		E085CDB92BE9151300022ED8 /* spaghetti-bolognese-recipe.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E085CDB82BE9151300022ED8 /* spaghetti-bolognese-recipe.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		E06F41452BDFD237003E7FF2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E06F41472BDFD36F003E7FF2 /* Rubik.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Rubik.ttf; sourceTree = "<group>"; };
 		E06F41492BDFD437003E7FF2 /* RubikMonoOne.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = RubikMonoOne.ttf; sourceTree = "<group>"; };
+		E085CDB82BE9151300022ED8 /* spaghetti-bolognese-recipe.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "spaghetti-bolognese-recipe.jpg"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				E06F41462BDFD2E5003E7FF2 /* Fonts */,
 				E06F41452BDFD237003E7FF2 /* Info.plist */,
 				E06F41352BDFB4A7003E7FF2 /* IOSopdrachtYassineApp.swift */,
+				E085CDB82BE9151300022ED8 /* spaghetti-bolognese-recipe.jpg */,
 				E06F41372BDFB4A7003E7FF2 /* ContentView.swift */,
 				E06F41392BDFB4A9003E7FF2 /* Assets.xcassets */,
 				E06F413B2BDFB4A9003E7FF2 /* Preview Content */,
@@ -146,6 +149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E06F414A2BDFD437003E7FF2 /* RubikMonoOne.ttf in Resources */,
+				E085CDB92BE9151300022ED8 /* spaghetti-bolognese-recipe.jpg in Resources */,
 				E06F413D2BDFB4A9003E7FF2 /* Preview Assets.xcassets in Resources */,
 				E06F41482BDFD36F003E7FF2 /* Rubik.ttf in Resources */,
 				E06F413A2BDFB4A9003E7FF2 /* Assets.xcassets in Resources */,
