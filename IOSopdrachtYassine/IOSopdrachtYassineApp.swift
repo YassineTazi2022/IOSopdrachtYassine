@@ -1,10 +1,3 @@
-//
-//  IOSopdrachtYassineApp.swift
-//  IOSopdrachtYassine
-//
-//  Created by ehb on 29/04/2024.
-//
-
 import SwiftUI
 
 @main
